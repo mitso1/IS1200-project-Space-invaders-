@@ -45,44 +45,63 @@ void user_isr( void )
   
   if (gamestate == 1)
   {
-    if (1) // btn4
+    /* // btn1  PORTF & 0x10
+    if ((IFS(1) & 0x1))// & (PORTF & 0x10) 
     {
-      /* Move left */
+      // Pause
+      IFSCLR(1) = 0x1;
+      display_string(1, "Pause");
     }
-    if (1) // btn2
+    // btn2  PORTD & 0x20
+    if ((IFS(1) & 0x1) ) //& (PORTD & 0x20)
     {
-      /* Move Right */
+      // Move Right 
+      IFSCLR(1) = 0x1;
+      player -= 128;
     }
-    if (1) // btn3
+    // btn3 PORTD & 0x40
+    if ((IFS(1) & 0x1) ) //& (PORTD & 0x40)
     {
-      /* Shoot */
+      // Shoot 
+      IFSCLR(1) = 0x1;
     }
-    if (1) // btn1
+    // btn4 PORTD & 0x80
+    if ((IFS(1) & 0x1) ) //& (PORTF & 0x80) 
     {
-      /* Pause */
-    }
+      // Move left 
+      IFSCLR(1) = 0x1;
+      player += 128;
+    } */
+
     if (IFS(0) & 0x100)
     {
       IFSCLR(0) = 0x100; // reset
       count++;
       //gameloop();
 
-      display_image(96, icon);
+      
+
+      //display_image(96, icon);
       if (count == 10)
       {
+        display_update();
+        player += 128;
+        
+        drawGraphics();
+        convGraph();
+
         /* drawGraphics();
         convGraph(); */
         time2string(textstring, mytime);
         //display_string(3, textstring);
-        display_update();
         tick(&mytime);
 
         display_graphics(0, graphics);
         if (testCount == 10)
         {
-          drawGraphics();
-          convGraph();
-          display_graphics(0,graphics);
+          player -= 1280;
+
+          
           /* gamestate = 0;
           T2CONCLR = 0x8000; */
         }
@@ -92,6 +111,8 @@ void user_isr( void )
       }
 
     }
+
+
   }
 
   if (gamestate == 2)
@@ -158,6 +179,10 @@ void labinit( void )
   IPCSET(2) = 0x1f00001e;             // second highest prority T2 and highest for INT2
 
   IECSET(0) = 0x900;            // interrupt enable for T2 and INT2
+
+  /* CNENSET = 0x4000;             // enable CNEN14
+  IECSET(1) = 0x1;   */            // interrupt enable CNIE
+
   
   T2CON = 0x8070;               // T2CON = 1000 0000 0111 0000
 

@@ -54,7 +54,7 @@ extern const uint16_t enemies[9*16];
 
 extern const uint16_t obstacles[3*16];
 
-extern const uint16_t player;
+extern uint16_t player;
 /* Declare text buffer for display output */
 extern char textbuffer[4][16];
 /* Declare GAMESTATE */
