@@ -31,11 +31,11 @@ void user_isr( void )
 
   if (gamestate == 0)
   {
-    if (/* condition */) // btn4
+    if (1) // btn4
     {
       /* New game */
     }
-    if (/* condition */) // btn3
+    if (1) // btn3
     {
       /* Leaderboards */
     }
@@ -45,19 +45,19 @@ void user_isr( void )
   
   if (gamestate == 1)
   {
-    if (/* condition */) // btn4
+    if (1) // btn4
     {
       /* Move left */
     }
-    if (/* condition */) // btn2
+    if (1) // btn2
     {
       /* Move Right */
     }
-    if (/* condition */) // btn3
+    if (1) // btn3
     {
       /* Shoot */
     }
-    if (/* condition */) // btn1
+    if (1) // btn1
     {
       /* Pause */
     }
@@ -65,11 +65,13 @@ void user_isr( void )
     {
       IFSCLR(0) = 0x100; // reset
       count++;
-      gameloop();
+      //gameloop();
 
-
+      display_image(96, icon);
       if (count == 10)
       {
+        /* drawGraphics();
+        convGraph(); */
         time2string(textstring, mytime);
         //display_string(3, textstring);
         display_update();
@@ -78,8 +80,11 @@ void user_isr( void )
         display_graphics(0, graphics);
         if (testCount == 10)
         {
-          gamestate = 0;
-          T2CONCLR = 0x8000;
+          drawGraphics();
+          convGraph();
+          display_graphics(0,graphics);
+          /* gamestate = 0;
+          T2CONCLR = 0x8000; */
         }
         
         count = 0;
@@ -91,11 +96,11 @@ void user_isr( void )
 
   if (gamestate == 2)
   {
-    if (/* condition */) // btn4
+    if (1) // btn4
     {
       /* New game */
     }
-    if (/* condition */) // btn3
+    if (1) // btn3
     {
       /* Resume */
     }
@@ -103,11 +108,11 @@ void user_isr( void )
 
   if (gamestate == 3)
   {
-    if (/* condition */) // btn4
+    if (1) // btn4
     {
       /* New game */
     }
-    if (/* condition */) // btn3
+    if (1) // btn3
     {
       /* Save Score */
     }
@@ -115,20 +120,20 @@ void user_isr( void )
   
   if (gamestate == 4)
   {
-    if (/* condition */) // btn4
+    if (1) // btn4
     {
       /* Letter select left */
     }
-    if (/* condition */) // btn2
+    if (1) // btn2
     {
       /* Letter select right */
     }
-    if (/* condition */) // btn3
+    if (1) // btn3
     {
       /* Letter save */
     }
 
-    if (/* condition */) // btn1
+    if (1) // btn1
     {
       /* Main menu */
     }
@@ -145,7 +150,7 @@ void user_isr( void )
 /* Lab-specific initialization goes here */
 void labinit( void )
 {
-  gameinit();
+  //gameinit();
   TMR2 = 0; 
   T2CON = 0;                    // count wraps at 10
   PR2 = (80000000 / 256) / 10;  // PR2 = 80M / 256 / 10 = 31250  (max for 16 bit is 65535)

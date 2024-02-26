@@ -40,7 +40,21 @@ extern const uint8_t const font[128*8];
 /* Declare bitmap array containing icon */
 extern const uint8_t const icon[128];
 /* Declare bitmap array containing icon */
-extern const uint8_t const graphics[512];
+extern uint8_t graphics[512*8];
+
+// extern uint8_t calcGraph[8*4096];
+
+extern const uint8_t enemyIcon[9*8];
+
+extern const uint8_t playerIcon[9*8];
+
+extern const uint8_t obstacleIcon[9*8];
+
+extern const uint16_t enemies[9*16];
+
+extern const uint16_t obstacles[3*16];
+
+extern const uint16_t player;
 /* Declare text buffer for display output */
 extern char textbuffer[4][16];
 /* Declare GAMESTATE */
