@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/Aspasia/Documents/GitHub/IS1200-project",
-      "program": "c:/Users/Aspasia/Documents/GitHub/IS1200-project/build/Debug/outDebug",
+      "cwd": "c:/msys64/dev/IS1200-project",
+      "program": "c:/msys64/dev/IS1200-project/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
