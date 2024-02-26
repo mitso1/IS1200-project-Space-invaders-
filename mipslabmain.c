@@ -11,6 +11,16 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 
+uint8_t gamestate = 1;
+
+void gameinit(){
+
+}
+
+void gameloop(){
+
+}
+
 int main(void) {
         /*
 	  This will set the peripheral bus clock to the same frequency
@@ -55,19 +65,48 @@ int main(void) {
 	SPI2CONSET = 0x8000;
 	
 	display_init();
-	display_string(0, "KTH/ICT lab");
+	/* display_string(0, "KTH/ICT lab");
 	display_string(1, "in Computer");
 	display_string(2, "Engineering");
-	display_string(3, "Welcome!");
+	display_string(3, "Welcome!"); */
+	 
+	display_image(0, icon);
 	display_update();
-	
-	display_image(96, icon);
 	
 	labinit(); /* Do any lab-specific initialization */
 
+
+	
 	while( 1 )
 	{
-	  labwork(); /* Do lab-specific things again and again */
+		switch (gamestate)
+		{
+		case 0:
+			/* Main menu */
+			display_string(0, "SPACE INVADERS!");
+			display_string(2, "1: NEW GAME");
+			display_string(3, "2: LEADERBOARDS");
+			
+			display_update();
+			break;
+		case 1:
+			/* Gameplay */
+	  		labwork(); /* Do lab-specific things again and again */
+			break;
+		case 2:
+			/* Pause menu */
+			break;
+		case 3:
+			/* Game over */
+			break;
+		case 4:
+			/* Leaderboard */
+			break;
+		
+		default:
+			gamestate = 1;
+			break;
+		}
 	}
 	return 0;
 }

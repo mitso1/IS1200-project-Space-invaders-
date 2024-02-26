@@ -39,8 +39,12 @@ void display_debug( volatile int * const addr );
 extern const uint8_t const font[128*8];
 /* Declare bitmap array containing icon */
 extern const uint8_t const icon[128];
+/* Declare bitmap array containing icon */
+extern const uint8_t const graphics[512];
 /* Declare text buffer for display output */
 extern char textbuffer[4][16];
+/* Declare GAMESTATE */
+extern uint8_t gamestate;
 
 /* Declare functions written by students.
    Note: Since we declare these functions here,

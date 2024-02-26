@@ -18,38 +18,134 @@
 int prime = 1234567;
 int mytime = 0x5957;
 int  count = 0;
+int  testCount = 0;
+
 
 char textstring[] = "text, more text, and even more text!";
+
 
 
 /* Interrupt Service Routine */
 void user_isr( void )
 {
-  if (IFS(0) & 0x800)
+
+  if (gamestate == 0)
+  {
+    if (/* condition */) // btn4
+    {
+      /* New game */
+    }
+    if (/* condition */) // btn3
+    {
+      /* Leaderboards */
+    }
+    
+  }
+  
+  
+  if (gamestate == 1)
+  {
+    if (/* condition */) // btn4
+    {
+      /* Move left */
+    }
+    if (/* condition */) // btn2
+    {
+      /* Move Right */
+    }
+    if (/* condition */) // btn3
+    {
+      /* Shoot */
+    }
+    if (/* condition */) // btn1
+    {
+      /* Pause */
+    }
+    if (IFS(0) & 0x100)
+    {
+      IFSCLR(0) = 0x100; // reset
+      count++;
+      gameloop();
+
+
+      if (count == 10)
+      {
+        time2string(textstring, mytime);
+        //display_string(3, textstring);
+        display_update();
+        tick(&mytime);
+
+        display_graphics(0, graphics);
+        if (testCount == 10)
+        {
+          gamestate = 0;
+          T2CONCLR = 0x8000;
+        }
+        
+        count = 0;
+        testCount++;
+      }
+
+    }
+  }
+
+  if (gamestate == 2)
+  {
+    if (/* condition */) // btn4
+    {
+      /* New game */
+    }
+    if (/* condition */) // btn3
+    {
+      /* Resume */
+    }
+  }
+
+  if (gamestate == 3)
+  {
+    if (/* condition */) // btn4
+    {
+      /* New game */
+    }
+    if (/* condition */) // btn3
+    {
+      /* Save Score */
+    }
+  }
+  
+  if (gamestate == 4)
+  {
+    if (/* condition */) // btn4
+    {
+      /* Letter select left */
+    }
+    if (/* condition */) // btn2
+    {
+      /* Letter select right */
+    }
+    if (/* condition */) // btn3
+    {
+      /* Letter save */
+    }
+
+    if (/* condition */) // btn1
+    {
+      /* Main menu */
+    }
+  }
+  
+  
+  /* if (IFS(0) & 0x800)
   {
     IFSCLR(0) = 0x800; // reset
     mytime += 3;
-  }
-  if (IFS(0) & 0x100)
-  {
-    IFSCLR(0) = 0x100; // reset
-    count++;
-
-    if (count == 10)
-    {
-      time2string(textstring, mytime);
-      display_string(3, textstring);
-      display_update();
-      tick(&mytime);
-
-      count = 0;
-    }
-  }
+  } */
 }
 
 /* Lab-specific initialization goes here */
 void labinit( void )
 {
+  gameinit();
   TMR2 = 0; 
   T2CON = 0;                    // count wraps at 10
   PR2 = (80000000 / 256) / 10;  // PR2 = 80M / 256 / 10 = 31250  (max for 16 bit is 65535)
@@ -72,7 +168,7 @@ void labinit( void )
 /* This function is called repetitively from the main program */
 void labwork( void )
 {
-  prime = nextprime(prime);
-  display_string(0, itoaconv(prime));
-  display_update();
+  /* prime = nextprime(prime);
+  display_string(0, itoaconv(prime)); */
+  //display_update();
 }
