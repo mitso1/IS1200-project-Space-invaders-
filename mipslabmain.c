@@ -207,7 +207,11 @@ void drawGraphics(){
 	int i;
 	for (i = 0; i < 4096; i++)
 	{
-		/* calcGraph[i] = 0; */
+		/* code */
+		calcGraph[i] = 0;
+	}
+	for (i = 0; i < 4096; i++)
+	{
 		int j;
 		for (j = 0; j < 9; j++)
 		{

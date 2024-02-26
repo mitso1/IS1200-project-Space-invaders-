@@ -82,10 +82,10 @@ void user_isr( void )
       
 
       //display_image(96, icon);
-      if (count == 10)
+      if (count == 4)
       {
         display_update();
-        player += 128;
+        player += 256;
         
         drawGraphics();
         convGraph();
@@ -100,11 +100,12 @@ void user_isr( void )
         
         if (testCount == 10)
         {
-          player -= 1280;
+          player -= 2560;
           display_graphics(0, graphics);
           
           /* gamestate = 0;
           T2CONCLR = 0x8000; */
+          testCount = 0;
         }
         
         count = 0;

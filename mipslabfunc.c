@@ -112,7 +112,7 @@ void display_init(void) {
 	spi_send_recv(0x14);
 	
 	spi_send_recv(0xD9);
-	spi_send_recv(0xF1);
+	spi_send_recv(0x05); // 0xF1, 0x21, 0x11, 0x01, 0x41
 	
 	DISPLAY_ACTIVATE_VBAT;
 	quicksleep(10000000);
@@ -174,7 +174,7 @@ void display_graphics(int x, const uint8_t *data) {
 		DISPLAY_CHANGE_TO_DATA_MODE;
 		
 		for(j = 0; j < 128; j++)
-			spi_send_recv(~data[i*128 + j]);
+			spi_send_recv(data[i*128 + j]);
 	}
 }
 
