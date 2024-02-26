@@ -96,11 +96,12 @@ void user_isr( void )
         //display_string(3, textstring);
         tick(&mytime);
 
-        display_graphics(0, graphics);
+        display_graphics(0,graphics);
+        
         if (testCount == 10)
         {
           player -= 1280;
-
+          display_graphics(0, graphics);
           
           /* gamestate = 0;
           T2CONCLR = 0x8000; */

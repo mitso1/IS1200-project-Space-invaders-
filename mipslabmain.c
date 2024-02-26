@@ -203,35 +203,30 @@ void drawIcon(int pos, const uint8_t icon[]){
 }
 //calcGraph
 void drawGraphics(){
-
-	if (playerLastPos != player & playerLastPos != 0)
-	{
-		
-		int i;
-		for (i = 0; i < 4096; i++)
-		{
-			calcGraph[i] = 0;
-			int j;
-			for (j = 0; j < 9; j++)
-			{
-				if (enemies[j] == i)
-				{
-					drawIcon(i, enemyIcon);		
-				}
-				if (obstacles[j] == i)
-				{
-					drawIcon(i, obstacleIcon);		
-				}
-			}
-
-			if (player == i)
-			{
-				drawIcon(i, playerIcon);		
-			}
-			
-		}
-	}
 	
+	int i;
+	for (i = 0; i < 4096; i++)
+	{
+		/* calcGraph[i] = 0; */
+		int j;
+		for (j = 0; j < 9; j++)
+		{
+			if (enemies[j] == i)
+			{
+				drawIcon(i, enemyIcon);		
+			}
+			if (obstacles[j] == i)
+			{
+				drawIcon(i, obstacleIcon);		
+			}
+		}
+
+		if (player == i)
+		{
+			drawIcon(i, playerIcon);		
+		}
+		
+	}
 	//obstacles
 
 	
