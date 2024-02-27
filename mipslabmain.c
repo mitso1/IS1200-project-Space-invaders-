@@ -12,7 +12,7 @@
 #include "mipslab.h"  /* Declatations for these labs */
 // #include "mipslabdata.c"
 
-uint8_t gamestate = 1;
+uint8_t gamestate = 0;
 
 uint16_t playerLastPos = 0;
 uint16_t enemiesLastPos[] = {
@@ -263,12 +263,12 @@ void drawGraphics(){
 	{
 		calcGraph[i] = 0;
 	} */
-	display_image(0, icon);
+	display_image(96, icon);
 	//display_texture(/* convPosition(player) */124, playerIcon);
 	if (playerLastPos != player)
 	{
 		//clr_texture(/* convPosition(playerLastPos) */0, playerIcon);
-		display_texture(/* convPosition(player) */123, playerIcon);
+		//display_texture(/* convPosition(player) */123, playerIcon);
 		playerLastPos = player;
 	}
 	

@@ -31,9 +31,12 @@ void user_isr( void )
 
   if (gamestate == 0)
   {
-    if (1) // btn4
+    IFSCLR(0) = 0x100;
+    if ((PORTF & 0x80)) //& (PORTF & 0x80) btn4 
     {
-      /* New game */
+      // Move left 
+      
+      gamestate = 1;
     }
     if (1) // btn3
     {
