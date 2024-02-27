@@ -46,27 +46,27 @@ void user_isr( void )
   if (gamestate == 1)
   {
     /* // btn1  PORTF & 0x10
-    if ((IFS(1) & 0x1))// & (PORTF & 0x10) 
+    if ((PORTF & 0x10))// & (PORTF & 0x10) 
     {
       // Pause
       IFSCLR(1) = 0x1;
       display_string(1, "Pause");
     }
     // btn2  PORTD & 0x20
-    if ((IFS(1) & 0x1) ) //& (PORTD & 0x20)
+    if ((PORTD & 0x20)) //& (PORTD & 0x20)(IFS(1) & 0x1)
     {
       // Move Right 
       IFSCLR(1) = 0x1;
       player -= 128;
     }
     // btn3 PORTD & 0x40
-    if ((IFS(1) & 0x1) ) //& (PORTD & 0x40)
+    if ((PORTD & 0x40) ) //& (PORTD & 0x40)
     {
       // Shoot 
       IFSCLR(1) = 0x1;
     }
     // btn4 PORTD & 0x80
-    if ((IFS(1) & 0x1) ) //& (PORTF & 0x80) 
+    if ((PORTF & 0x80)) //& (PORTF & 0x80) 
     {
       // Move left 
       IFSCLR(1) = 0x1;
@@ -82,13 +82,13 @@ void user_isr( void )
       
 
       //display_image(96, icon);
-      if (count == 4)
+      if (count == 2)
       {
         display_update();
         player += 256;
         
         drawGraphics();
-        convGraph();
+        //convGraph();
 
         /* drawGraphics();
         convGraph(); */
@@ -96,13 +96,12 @@ void user_isr( void )
         //display_string(3, textstring);
         tick(&mytime);
 
-        display_graphics(0,graphics);
+        
         
         if (testCount == 10)
         {
           player -= 2560;
-          display_graphics(0, graphics);
-          
+          drawGraphics();          
           /* gamestate = 0;
           T2CONCLR = 0x8000; */
           testCount = 0;

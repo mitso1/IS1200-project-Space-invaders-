@@ -15,6 +15,17 @@
 uint8_t gamestate = 1;
 
 uint16_t playerLastPos = 0;
+uint16_t enemiesLastPos[] = {
+	0, 0, 0,
+	0, 0, 0,
+	0, 0, 0,
+};
+uint16_t obstacleLastPos[] = {
+	0, 0, 0,
+	0, 0, 0,
+	0, 0, 0,
+};
+
 
 uint8_t calcGraph[] = {
 	0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,
@@ -188,6 +199,39 @@ void gameloop(){
 
 }
 
+int convPosition(uint16_t pos){
+	int temp = 0;
+	int i;
+	for (i = 0; i < 32; i++)
+	{
+		int j;
+		for (j = 0; j < 128; j++)
+		{
+			if ((int) pos == j + i*128)
+			{
+				temp = j + ((i/8) * 128);
+			}	
+		}
+	}
+	return (int)temp;
+}
+uint8_t calcOffset(uint16_t pos){
+	int i;
+	for (i = 0; i < 32; i++)
+	{
+		int j;
+		for (j = 0; j < 128; j++)
+		{
+			if (pos == j + i*128)
+			{
+				return (uint8_t) i % 8;
+			}	
+		}
+	}
+
+}
+
+
 void drawIcon(int pos, const uint8_t icon[]){
 	int i;
 	for (i = 0; i < 3; i++)
@@ -201,16 +245,50 @@ void drawIcon(int pos, const uint8_t icon[]){
 		
 	}
 }
+/* int convPosition(uint16_t pos){
+	if (pos <= 127)
+	{
+		return pos;
+	}
+	if (pos >= 1024 & pos <= 2047)
+	{
+		return pos ;
+	}
+} */
 //calcGraph
 void drawGraphics(){
 	
 	int i;
-	for (i = 0; i < 4096; i++)
+	/* for (i = 0; i < 4096; i++)
 	{
-		/* code */
 		calcGraph[i] = 0;
+	} */
+
+	if (playerLastPos != player)
+	{
+		//clr_texture(/* convPosition(playerLastPos) */0, playerIcon);
+		display_texture(/* convPosition(player) */123, playerIcon);
+		playerLastPos = player;
 	}
-	for (i = 0; i < 4096; i++)
+	
+	/* for (i = 0; i < 9; i++)
+	{
+		if (obstacleLastPos[i] != obstacles[i])
+		{
+			clr_texture(convPosition(obstacleLastPos[i]), obstacleIcon, calcOffset(obstacleLastPos[i]));
+			display_texture(convPosition(obstacles[i]), obstacleIcon, calcOffset(obstacles[i]));
+			obstacleLastPos[i] = obstacles[i];
+		}
+		if (enemiesLastPos[i] != enemies[i])
+		{
+			clr_texture(convPosition(enemiesLastPos[i]), enemyIcon, calcOffset(enemiesLastPos[i]));
+			display_texture(convPosition(enemies[i]), enemyIcon, calcOffset(enemies[i]));
+			enemiesLastPos[i] = enemies[i];
+		}
+	}  */
+	
+	
+	/* for (i = 0; i < 4096; i++)
 	{
 		int j;
 		for (j = 0; j < 9; j++)
@@ -230,7 +308,7 @@ void drawGraphics(){
 			drawIcon(i, playerIcon);		
 		}
 		
-	}
+	} */
 	//obstacles
 
 	
@@ -256,6 +334,7 @@ void convGraph(){
 	}
 	
 }
+
 
 int main(void) {
         /*
@@ -306,7 +385,7 @@ int main(void) {
 	display_string(2, "Engineering");
 	display_string(3, "Welcome!"); */
 	 
-	display_image(0, icon);
+	/* display_image(0, icon); */
 	display_update();
 	
 	labinit(); /* Do any lab-specific initialization */

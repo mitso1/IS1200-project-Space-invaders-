@@ -112,7 +112,7 @@ void display_init(void) {
 	spi_send_recv(0x14);
 	
 	spi_send_recv(0xD9);
-	spi_send_recv(0x05); // 0xF1, 0x21, 0x11, 0x01, 0x41
+	spi_send_recv(0x21); // 0xF1, 0x21, 0x11, 0x01, 0x41, 0x05
 	
 	DISPLAY_ACTIVATE_VBAT;
 	quicksleep(10000000);
@@ -177,6 +177,45 @@ void display_graphics(int x, const uint8_t *data) {
 			spi_send_recv(data[i*128 + j]);
 	}
 }
+
+void display_texture(int x, const uint8_t *data) {
+	int i, j;
+	
+	for(i = 0; i < 4; i++) {
+		DISPLAY_CHANGE_TO_COMMAND_MODE;
+
+		spi_send_recv(0x22);
+		spi_send_recv(i);
+		
+		spi_send_recv(x & 0xF);
+		spi_send_recv(0x10 | ((x >> 4) & 0xF));
+		
+		DISPLAY_CHANGE_TO_DATA_MODE;
+		
+		for(j = 0; j < 3; j++)
+			spi_send_recv(data[i * (128 - (x % 128)) + j]);
+	}
+}
+
+void clr_texture(int x, const uint8_t *data) {
+	int i, j;
+	
+	for(i = 0; i < 4; i++) {
+		DISPLAY_CHANGE_TO_COMMAND_MODE;
+
+		spi_send_recv(0x22);
+		spi_send_recv(i);
+		
+		spi_send_recv(x & 0xF);
+		spi_send_recv(0x10 | ((x >> 4) & 0xF));
+		
+		DISPLAY_CHANGE_TO_DATA_MODE;
+		
+		for(j = 0; j < 3; j++)
+			spi_send_recv(~data[i * (128 - (x % 128)) + j]);
+	}
+}
+
 
 void display_partial(int x, const uint8_t *data) {
 	int i, j;
