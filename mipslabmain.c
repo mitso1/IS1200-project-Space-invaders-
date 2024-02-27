@@ -263,7 +263,8 @@ void drawGraphics(){
 	{
 		calcGraph[i] = 0;
 	} */
-
+	display_image(0, icon);
+	//display_texture(/* convPosition(player) */124, playerIcon);
 	if (playerLastPos != player)
 	{
 		//clr_texture(/* convPosition(playerLastPos) */0, playerIcon);

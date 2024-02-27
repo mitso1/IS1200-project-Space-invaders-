@@ -85,23 +85,22 @@ void user_isr( void )
       if (count == 2)
       {
         display_update();
-        player += 256;
+        //player += 256;
         
         drawGraphics();
         //convGraph();
 
         /* drawGraphics();
         convGraph(); */
-        time2string(textstring, mytime);
+        //time2string(textstring, mytime);
         //display_string(3, textstring);
-        tick(&mytime);
+        //tick(&mytime);
 
         
         
         if (testCount == 10)
         {
-          player -= 2560;
-          drawGraphics();          
+          //player -= 2560;
           /* gamestate = 0;
           T2CONCLR = 0x8000; */
           testCount = 0;
