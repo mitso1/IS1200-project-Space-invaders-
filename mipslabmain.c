@@ -199,6 +199,7 @@ void gameloop(){
 
 }
 
+<<<<<<< Updated upstream
 int convPosition(uint16_t pos){
 	int temp = 0;
 	int i;
@@ -232,6 +233,22 @@ uint8_t calcOffset(uint16_t pos){
 }
 
 
+=======
+int calcNewPos(uint16_t pos){
+	int i, j;
+	for (i = 0; i < 32; i++)
+	{
+		for (j = 0; j < 128; j++)
+		{
+			/* code */
+		}
+		
+	}
+	return;
+	
+}
+
+>>>>>>> Stashed changes
 void drawIcon(int pos, const uint8_t icon[]){
 	int i;
 	for (i = 0; i < 3; i++)
@@ -271,6 +288,7 @@ void drawGraphics(){
 		//display_texture(/* convPosition(player) */123, playerIcon);
 		playerLastPos = player;
 	}
+<<<<<<< Updated upstream
 	
 	/* for (i = 0; i < 9; i++)
 	{
@@ -289,6 +307,10 @@ void drawGraphics(){
 	}  */
 	
 	
+=======
+
+	display_texture(7, playerIcon);
+>>>>>>> Stashed changes
 	/* for (i = 0; i < 4096; i++)
 	{
 		int j;

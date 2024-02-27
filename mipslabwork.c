@@ -99,7 +99,11 @@ void user_isr( void )
         //display_string(3, textstring);
         //tick(&mytime);
 
+<<<<<<< Updated upstream
         
+=======
+        // display_graphics(0,graphics);
+>>>>>>> Stashed changes
         
         if (testCount == 10)
         {
