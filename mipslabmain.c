@@ -13,6 +13,7 @@
 // #include "mipslabdata.c"
 
 uint8_t gamestate = 1;
+uint8_t gameover = 0;
 
 uint16_t playerLastPos = 0;
 
@@ -181,12 +182,70 @@ uint8_t calcGraph[] = {
 };
 
 void gameinit(){
+	// reset score and level and gameover variable
+	// reset positions of all
+	// restart timer
 
 }
 
 void gameloop(){
+	// check if game over
+
+	// increment timer
+
+	// Check collision
+		// game over
+		// kill enemies
+			// score
+		// remove objects
+		// level up
+
+	// Calc/set movement speed/direction for enemies, projectiles and obstacles
+
+	// move enemies, projectiles and obstacles
+
+	// update display
 
 }
+
+uint8_t getbtns(int btnindex){
+
+	uint8_t temp = ((PORTD & 0xE0) >> 4) | ((PORTF & 0x2) >> 1);
+	return (temp & (0x1 << btnindex));
+}
+
+/* int convPosition(uint16_t pos){
+	int temp = 0;
+	int i;
+	for (i = 0; i < 32; i++)
+	{
+		int j;
+		for (j = 0; j < 128; j++)
+		{
+			if ((int) pos == j + i*128)
+			{
+				temp = j + ((i/8) * 128);
+			}	
+		}
+	}
+	return (int)temp;
+}
+uint8_t calcOffset(uint16_t pos){
+	int i;
+	for (i = 0; i < 32; i++)
+	{
+		int j;
+		for (j = 0; j < 128; j++)
+		{
+			if (pos == j + i*128)
+			{
+				return (uint8_t) i % 8;
+			}	
+		}
+	}
+
+} */
+
 
 void drawIcon(int pos, const uint8_t icon[]){
 	int i;
@@ -210,6 +269,32 @@ void drawGraphics(){
 		/* code */
 		calcGraph[i] = 0;
 	}
+	/* display_image(96, icon);
+	//display_texture(convPosition(player)124, playerIcon);
+	if (playerLastPos != player)
+	{
+		//clr_texture(convPosition(playerLastPos)0, playerIcon);
+		//display_texture(convPosition(player)123, playerIcon);
+		playerLastPos = player;
+	} */
+	
+	/* for (i = 0; i < 9; i++)
+	{
+		if (obstacleLastPos[i] != obstacles[i])
+		{
+			clr_texture(convPosition(obstacleLastPos[i]), obstacleIcon, calcOffset(obstacleLastPos[i]));
+			display_texture(convPosition(obstacles[i]), obstacleIcon, calcOffset(obstacles[i]));
+			obstacleLastPos[i] = obstacles[i];
+		}
+		if (enemiesLastPos[i] != enemies[i])
+		{
+			clr_texture(convPosition(enemiesLastPos[i]), enemyIcon, calcOffset(enemiesLastPos[i]));
+			display_texture(convPosition(enemies[i]), enemyIcon, calcOffset(enemies[i]));
+			enemiesLastPos[i] = enemies[i];
+		}
+	}  */
+	
+	//display_texture(convPosition(player), playerIcon);
 	for (i = 0; i < 4096; i++)
 	{
 		int j;
@@ -324,6 +409,7 @@ int main(void) {
 			display_string(3, "2: LEADERBOARDS");
 			
 			display_update();
+			labwork();
 			break;
 		case 1:
 			/* Gameplay */

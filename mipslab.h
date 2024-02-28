@@ -50,6 +50,8 @@ extern const uint8_t playerIcon[9*8];
 
 extern const uint8_t obstacleIcon[9*8];
 
+extern const uint8_t projectileIcon[4*8];
+
 extern const uint16_t enemies[9*16];
 
 extern const uint16_t obstacles[3*16];
@@ -68,6 +70,6 @@ extern uint8_t gamestate;
 void delay(int);
 void time2string( char *, int );
 /* Written as part of i/o lab: getbtns, getsw, enable_interrupt */
-int getbtns(void);
+uint8_t getbtns(int);
 int getsw(void);
 void enable_interrupt(void);

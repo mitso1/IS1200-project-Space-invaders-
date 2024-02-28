@@ -112,7 +112,7 @@ void display_init(void) {
 	spi_send_recv(0x14);
 	
 	spi_send_recv(0xD9);
-	spi_send_recv(0x05); // 0xF1, 0x21, 0x11, 0x01, 0x41
+	spi_send_recv(0xF1); // 0xF1, 0x21, 0x11, 0x01, 0x41, 0x05
 	
 	DISPLAY_ACTIVATE_VBAT;
 	quicksleep(10000000);
@@ -178,7 +178,7 @@ void display_graphics(int x, const uint8_t *data) {
 	}
 }
 
-void display_partial(int x, const uint8_t *data) {
+void display_texture(int x, const uint8_t *data) {
 	int i, j;
 	
 	for(i = 0; i < 4; i++) {
@@ -193,8 +193,36 @@ void display_partial(int x, const uint8_t *data) {
 		DISPLAY_CHANGE_TO_DATA_MODE;
 		
 		for(j = 0; j < 4; j++)
-			spi_send_recv(~data[i*128 + j]);
+			spi_send_recv(data[i*3 + j]);
 	}
+}
+
+void display_partial(int x, int y, const uint8_t *data, int width, int height) {
+    // x, y: Top-left corner coordinates of the updated area
+    // data: Pointer to the updated data
+    // width, height: Dimensions of the updated area
+
+    int i, j;
+
+    // Calculate the segment (page) corresponding to the y-coordinate
+    int segment = y / 8;
+
+    DISPLAY_CHANGE_TO_COMMAND_MODE;
+    spi_send_recv(0x22); // Set page address
+    spi_send_recv(segment);
+
+    // Set column address (x-coordinate)
+    spi_send_recv(x & 0xF);
+    spi_send_recv(0x10 | ((x >> 4) & 0xF));
+
+    DISPLAY_CHANGE_TO_DATA_MODE;
+
+    // Update the specified area
+    for (i = 0; i < height; i++) {
+        for (j = 0; j < width; j++) {
+            spi_send_recv(data[i * width + j]);
+        }
+    }
 }
 
 void display_update(void) {

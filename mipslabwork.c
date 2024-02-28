@@ -31,13 +31,18 @@ void user_isr( void )
 
   if (gamestate == 0)
   {
-    if (1) // btn4
+    if (getbtns(0)) //& (PORTF & 0x80) btn4 
     {
-      /* New game */
+      // Move left 
+      gamestate = 1;
     }
     if (1) // btn3
     {
       /* Leaderboards */
+    }
+    if (IFS(0) & 0x100)
+    {
+      IFSCLR(0) = 0x100; // reset
     }
     
   }
@@ -45,33 +50,33 @@ void user_isr( void )
   
   if (gamestate == 1)
   {
-    /* // btn1  PORTF & 0x10
-    if ((IFS(1) & 0x1))// & (PORTF & 0x10) 
+    // btn1  PORTF & 0x10
+    if (getbtns(0))// & (PORTF & 0x10) 
     {
       // Pause
-      IFSCLR(1) = 0x1;
-      display_string(1, "Pause");
+      //display_string(1, "Pause");
+      gamestate = 0;
     }
     // btn2  PORTD & 0x20
-    if ((IFS(1) & 0x1) ) //& (PORTD & 0x20)
+    if (getbtns(1)) //& (PORTD & 0x20)(IFS(1) & 0x1)
     {
       // Move Right 
       IFSCLR(1) = 0x1;
-      player -= 128;
+      player -= 256;
     }
     // btn3 PORTD & 0x40
-    if ((IFS(1) & 0x1) ) //& (PORTD & 0x40)
+    if (getbtns(2)) //& (PORTD & 0x40)
     {
       // Shoot 
       IFSCLR(1) = 0x1;
     }
     // btn4 PORTD & 0x80
-    if ((IFS(1) & 0x1) ) //& (PORTF & 0x80) 
+    if (getbtns(3)) //& (PORTF & 0x80) 
     {
       // Move left 
       IFSCLR(1) = 0x1;
-      player += 128;
-    } */
+      player += 256;
+    }
 
     if (IFS(0) & 0x100)
     {
@@ -81,28 +86,31 @@ void user_isr( void )
 
       
 
+        //display_update();
+        drawGraphics();
+        convGraph();
+        display_graphics(0, graphics);
       //display_image(96, icon);
       if (count == 4)
       {
-        display_update();
-        player += 256;
+        //player += 256;
         
-        drawGraphics();
-        convGraph();
-
+        
+        //---> här
+        //display_partial(0, 0, graphics, 128, 32);
         /* drawGraphics();
         convGraph(); */
         time2string(textstring, mytime);
         //display_string(3, textstring);
         tick(&mytime);
 
-        display_graphics(0,graphics);
+        
+        // display_graphics(0,graphics);
         
         if (testCount == 10)
         {
-          player -= 2560;
-          display_graphics(0, graphics);
-          
+          //player -= 2560;
+
           /* gamestate = 0;
           T2CONCLR = 0x8000; */
           testCount = 0;
@@ -176,7 +184,7 @@ void labinit( void )
   //gameinit();
   TMR2 = 0; 
   T2CON = 0;                    // count wraps at 10
-  PR2 = (80000000 / 256) / 10;  // PR2 = 80M / 256 / 10 = 31250  (max for 16 bit is 65535)
+  PR2 = (80000000 / 256) / 20;  // PR2 = 80M / 256 / 10 = 31250  (max for 16 bit is 65535)
 
   IPCSET(2) = 0x1f00001e;             // second highest prority T2 and highest for INT2
 
@@ -194,12 +202,14 @@ void labinit( void )
   volatile int *trise = (volatile int*) 0xbf886100;
   *trise &= ~0xff;
   TRISDSET = 0xfe0;
+  TRISFSET = 0x2;
   return;
 }
 
 /* This function is called repetitively from the main program */
 void labwork( void )
 {
+  
   /* prime = nextprime(prime);
   display_string(0, itoaconv(prime)); */
   //display_update();
