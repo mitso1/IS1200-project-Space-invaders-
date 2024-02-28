@@ -31,14 +31,11 @@ void user_isr( void )
 
   if (gamestate == 0)
   {
-    if (getbtns(0)) //& (PORTF & 0x80) btn4 
+    if (getbtns(3)) //& (PORTF & 0x80) btn4 
     {
-      // Move left 
+      IFSCLR(0) = 0x100;
+      gameinit();
       gamestate = 1;
-    }
-    if (1) // btn3
-    {
-      /* Leaderboards */
     }
     if (IFS(0) & 0x100)
     {
@@ -100,38 +97,11 @@ void user_isr( void )
       
 
         //display_update();
-        drawGraphics();
-        convGraph();
-        display_graphics(0, graphics);
+      drawGraphics();
+      convGraph();
+      display_graphics(0, graphics);
       //display_image(96, icon);
-      if (count == 4)
-      {
-        //player += 256;
-        
-        
-        //---> här
-        //display_partial(0, 0, graphics, 128, 32);
-        /* drawGraphics();
-        convGraph(); */
-        time2string(textstring, mytime);
-        //display_string(3, textstring);
-        tick(&mytime);
-
-        
-        // display_graphics(0,graphics);
-        
-        if (testCount == 10)
-        {
-          //player -= 2560;
-
-          /* gamestate = 0;
-          T2CONCLR = 0x8000; */
-          testCount = 0;
-        }
-        
-        count = 0;
-        testCount++;
-      }
+      
 
     }
 

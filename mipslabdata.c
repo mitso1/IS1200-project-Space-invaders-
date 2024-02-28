@@ -291,6 +291,18 @@ const uint8_t const obstacleIcon[] = {
 	1, 1, 1,
 };
 
+const uint8_t const damagedObstacleIcon1[] = {
+	0, 1, 0,
+	1, 0, 0,
+	1, 0, 1,
+};
+
+const uint8_t const damagedObstacleIcon2[] = {
+	0, 1, 1,
+	1, 1, 1,
+	1, 0, 1,
+};
+
 const uint8_t const projectileIcon[] = {
 	0, 0, 0,
 	1, 1, 1,
@@ -304,12 +316,27 @@ int16_t enemies[] = {
 };
 
 int16_t obstacles[] = {
-	3*128 + 64, 6*128 + 72, 21*128 + 80, 
-	12*128 + 88, 15*128 + 96, 27*128 + 104, 
-	9*128 + 112, 18*128 + 56, 24*128 + 48, 
+	6*128 + 110, 9*128 + 110, 12*128 + 110, 
+	6*128 + 107, 9*128 + 107, 12*128 + 107, 
+	19*128 + 110, 22*128 + 110, 25*128 + 110, 
+	19*128 + 107, 22*128 + 107, 25*128 + 107, 
 };
 
+int16_t obstacleHealth[] = {
+	3, 3, 3,
+	3, 2, 3,
+	3, 3, 3, 
+	3, 3, 3, 
+};
+
+
 int16_t projectiles[16*36];/*  {
+	0*128 + 118, 5000, 5000,
+	5000, 5000, 5000,
+	5000, 5000, 5000,
+}; */
+
+int16_t enemyProjectiles[16*36];/*  {
 	0*128 + 118, 5000, 5000,
 	5000, 5000, 5000,
 	5000, 5000, 5000,
@@ -327,29 +354,42 @@ int16_t yEnemySpeed[] = {
 	-128, 128, -128,
 };
 
+const int16_t startingEnemiesShootCount[] = {
+	736, 981, 31, 
+	23, 917, 128, 
+	83, 542, 110,
+};
+
+int16_t enemiesShootCount[] = {
+	736, 981, 31, 
+	23, 917, 128, 
+	83, 542, 110,
+};
+
 int16_t xProjectileSpeed[] = {
-	-1, -1, -1,
-	-1, -1, -1,
-	-1, -1, -1,
-	-1, -1, -1,
-	-1, -1, -1,
-	-1, -1, -1,
-	-1, -1, -1,
-	-1, -1, -1,
-	-1, -1, -1,
-	-1, -1, -1,
-	-1, -1, -1,
-	-1, -1, -1,
+	-2, -2, -2,
+	-2, -2, -2,
+	-2, -2, -2,
+	-2, -2, -2,
+	-2, -2, -2,
+	-2, -2, -2,
+	-2, -2, -2,
+	-2, -2, -2,
+	-2, -2, -2,
+	-2, -2, -2,
+	-2, -2, -2,
+	-2, -2, -2,
 };
 
 int16_t player = 0*128 + 123;
 
-uint8_t gamestate = 1;
-uint8_t gameover = 0;
+uint8_t gamestate = 0;
 int scoreTimer = 0;
 uint8_t level = 0;
 uint8_t nofEnemies = 9;
-uint8_t nofObstacles = 3;
+uint8_t nofObstacles = 12;
 uint8_t nofProjectiles = 0;
+uint8_t nofEnemyProjectiles = 0;
 uint8_t triggerCooldown = 0; //200 ms (4 timeoutevents)
 uint8_t enemyMovementCount = 0;
+uint8_t enemyRndAssignment = 0;

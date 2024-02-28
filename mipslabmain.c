@@ -8,15 +8,11 @@
    For copyright and licensing, see file COPYING */
 
 #include <stdint.h>   /* Declarations of uint_32 and the like */
+#include <stdlib.h>
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 // #include "mipslabdata.c"
 
-
-
-
-
-uint16_t playerLastPos = 0;
 
 uint8_t calcGraph[] = {
 	0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,
@@ -189,6 +185,10 @@ void gameinit(){
 
 }
 
+void levelinit(uint8_t level){
+
+}
+
 uint8_t checkCollision(int16_t obj1, int16_t projectile){
 	int i, j;
 	for (i = 0; i < 5; i++)
@@ -240,6 +240,44 @@ void removeItem(int16_t items[], int index, int nofItems){
 	items[nofItems - 1] = 5000;
 }
 
+void enemyShoot(int i){
+	enemiesShootCount[i]--;
+	if (enemiesShootCount[i] == 0)
+	{
+		enemyProjectiles[nofEnemyProjectiles] = (enemies[i] / 128)*128 + (enemies[i] % 128);
+        nofEnemyProjectiles++;
+		enemiesShootCount[i] = startingEnemiesShootCount[enemyRndAssignment];
+		enemyRndAssignment++;
+		if (enemyRndAssignment == 9)
+		{
+			enemyRndAssignment = 0;
+		}
+		
+	}
+}
+
+void obstacleHit(int16_t proj[], uint8_t nofProj){
+	int i,j;
+	for (i = 0; i < nofProj; i++)
+		{
+			for (j = 0; j < nofObstacles; j++)
+			{
+				if (checkCollision(obstacles[j], proj[i]))
+				{
+					obstacleHealth[j]--;
+					if (obstacleHealth[j] == 0)
+					{
+						removeItem(obstacles, j, nofObstacles);
+						removeItem(obstacleHealth, j, nofObstacles);
+						nofObstacles--;
+					}
+					removeItem(proj, i, nofProj);
+					nofProj--;
+				}
+			}
+		}
+}
+
 void gameloop(){
 	if (gamestate != 3)
 	{
@@ -254,6 +292,15 @@ void gameloop(){
 				/* xProjectileSpeed[i] *= -1;  */
 				removeItem(projectiles, i, nofProjectiles);
 				nofProjectiles--;
+			}
+		}
+		for (i = 0; i < nofEnemyProjectiles; i++)
+		{
+			if (outOfBounds(enemyProjectiles[i]))
+			{
+				/* xProjectileSpeed[i] *= -1;  */
+				removeItem(enemyProjectiles, i, nofEnemyProjectiles);
+				nofEnemyProjectiles--;
 			}
 		}
 		if (enemyMovementCount == 8)
@@ -299,16 +346,20 @@ void gameloop(){
 		}
 		
 		// game over
-		for (i = 0; i < nofProjectiles; i++)
+		for (i = 0; i < nofEnemyProjectiles; i++)
 		{
-			if (checkCollision(player, projectiles[i]))
+			if (checkCollision(player, enemyProjectiles[i]))
 			{
-				gamestate = 3;
+				removeItem(enemyProjectiles, i, nofEnemyProjectiles);
+				gamestate = 0;//change to 3
 			}
 			
 		}
 				// score
-			// remove objects
+
+		// remove objects
+		obstacleHit(projectiles, nofProjectiles);
+		obstacleHit(enemyProjectiles, nofEnemyProjectiles);
 			// level up
 
 		// Calc/set movement speed/direction for enemies, projectiles and obstacles
@@ -317,6 +368,10 @@ void gameloop(){
 		for (i = 0; i < nofProjectiles; i++)
 		{
 			projectiles[i] += xProjectileSpeed[i]; 
+		}
+		for (i = 0; i < nofEnemyProjectiles; i++)
+		{
+			enemyProjectiles[i] += 2; 
 		}
 		if (enemyMovementCount == 8)
 		{
@@ -327,6 +382,11 @@ void gameloop(){
 			enemyMovementCount = 0;
 		}
 		enemyMovementCount++;
+		for (i = 0; i < nofEnemies; i++)
+		{
+			enemyShoot(i);
+		}
+		
 
 		// update display
 		
@@ -437,12 +497,30 @@ void drawGraphics(){
 		{
 			if (obstacles[j] == i)
 			{
-				drawIcon(i, obstacleIcon);		
+				switch (obstacleHealth[j])
+				{
+				case 1:
+					drawIcon(i, damagedObstacleIcon1);		
+					break;
+				case 2:
+					drawIcon(i, damagedObstacleIcon2);		
+					break;
+				default:
+					drawIcon(i, obstacleIcon);		
+					break;
+				}
 			}
 		}
 		for (j = 0; j < nofProjectiles; j++)
 		{
 			if (projectiles[j] == i)
+			{
+				drawIcon(i, projectileIcon);		
+			}
+		}
+		for (j = 0; j < nofEnemyProjectiles; j++)
+		{
+			if (enemyProjectiles[j] == i)
 			{
 				drawIcon(i, projectileIcon);		
 			}
@@ -533,6 +611,8 @@ int main(void) {
 	display_image(0, icon);
 	display_update();
 	
+	
+
 	labinit(); /* Do any lab-specific initialization */
 
 
