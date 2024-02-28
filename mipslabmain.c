@@ -12,8 +12,9 @@
 #include "mipslab.h"  /* Declatations for these labs */
 // #include "mipslabdata.c"
 
-uint8_t gamestate = 1;
-uint8_t gameover = 0;
+
+
+
 
 uint16_t playerLastPos = 0;
 
@@ -188,23 +189,150 @@ void gameinit(){
 
 }
 
+uint8_t checkCollision(int16_t obj1, int16_t projectile){
+	int i, j;
+	for (i = 0; i < 5; i++)
+	{
+		for (j = 0; j < 5; j++)
+		{
+			if (obj1 == (projectile + ((i * 128)) - 2*128) + j - 2)
+			{
+				return 1;
+			}
+		}
+		
+	}
+	
+	return 0;
+}
+
+/* returns; 
+	0 if inside bounds
+	1 if at x-axis border 
+	2 if at y-axis borer 
+	3 if at both borders */
+uint8_t outOfBounds(int16_t obj){
+
+	uint8_t temp = 0;
+	int i, j;
+	if (obj % 128 >= 125 || obj % 128 <= 0)
+	{
+		temp += 1;
+	}
+	if (obj / 128 >= 29 || obj / 128 <= 0)
+	{
+		temp += 2;
+	}
+	
+	return temp;
+}
+
+void removeItem(int16_t items[], int index, int nofItems){
+	int i;
+	if (nofItems != 1)
+	{
+		for (i = index; i < nofItems; i++)
+		{
+			items[i] = items[i+1];
+		}
+	}
+	
+	items[nofItems - 1] = 5000;
+}
+
 void gameloop(){
-	// check if game over
+	if (gamestate != 3)
+	{
+		int i,j;
+		scoreTimer++;
 
-	// increment timer
-
-	// Check collision
-		// game over
+		// Check collision
+		for (i = 0; i < nofProjectiles; i++)
+		{
+			if (outOfBounds(projectiles[i]))
+			{
+				/* xProjectileSpeed[i] *= -1;  */
+				removeItem(projectiles, i, nofProjectiles);
+				nofProjectiles--;
+			}
+		}
+		if (enemyMovementCount == 8)
+		{
+			for (i = 0; i < nofEnemies; i++)
+			{
+				switch (outOfBounds(enemies[i]))
+				{
+				case 0:
+					break;
+				case 1:
+					xEnemySpeed[i] *= -1;
+					break;
+				case 2:
+					yEnemySpeed[i] *= -1;
+					break;
+				case 3:
+					xEnemySpeed[i] *= -1;
+					yEnemySpeed[i] *= -1;
+					break;
+				
+				default:
+					break;
+				}
+			}
+		}
+		
 		// kill enemies
-			// score
-		// remove objects
-		// level up
+		for (i = 0; i < nofProjectiles; i++)
+		{
+			for (j = 0; j < nofEnemies; j++)
+			{
+				if (checkCollision(enemies[j], projectiles[i]))
+				{
+					removeItem(enemies, j, nofEnemies);
+					removeItem(xEnemySpeed, j, nofEnemies);
+					removeItem(yEnemySpeed, j, nofEnemies);
+					nofEnemies--;
+					removeItem(projectiles, i, nofProjectiles);
+					nofProjectiles--;
+				}
+			}
+		}
+		
+		// game over
+		for (i = 0; i < nofProjectiles; i++)
+		{
+			if (checkCollision(player, projectiles[i]))
+			{
+				gamestate = 3;
+			}
+			
+		}
+				// score
+			// remove objects
+			// level up
 
-	// Calc/set movement speed/direction for enemies, projectiles and obstacles
+		// Calc/set movement speed/direction for enemies, projectiles and obstacles
 
-	// move enemies, projectiles and obstacles
+		// move enemies, projectiles and obstacles
+		for (i = 0; i < nofProjectiles; i++)
+		{
+			projectiles[i] += xProjectileSpeed[i]; 
+		}
+		if (enemyMovementCount == 8)
+		{
+			for (i = 0; i < nofEnemies; i++)
+			{
+				enemies[i] += xEnemySpeed[i] + yEnemySpeed[i];
+			}
+			enemyMovementCount = 0;
+		}
+		enemyMovementCount++;
 
-	// update display
+		// update display
+		
+	}
+	
+
 
 }
 
@@ -298,17 +426,28 @@ void drawGraphics(){
 	for (i = 0; i < 4096; i++)
 	{
 		int j;
-		for (j = 0; j < 9; j++)
+		for (j = 0; j < nofEnemies; j++)
 		{
 			if (enemies[j] == i)
 			{
 				drawIcon(i, enemyIcon);		
 			}
+		}
+		for (j = 0; j < nofObstacles; j++)
+		{
 			if (obstacles[j] == i)
 			{
 				drawIcon(i, obstacleIcon);		
 			}
 		}
+		for (j = 0; j < nofProjectiles; j++)
+		{
+			if (projectiles[j] == i)
+			{
+				drawIcon(i, projectileIcon);		
+			}
+		}
+		
 
 		if (player == i)
 		{

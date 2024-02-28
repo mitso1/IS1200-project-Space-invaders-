@@ -53,6 +53,7 @@ void user_isr( void )
     // btn1  PORTF & 0x10
     if (getbtns(0))// & (PORTF & 0x10) 
     {
+      IFSCLR(1) = 0x1;
       // Pause
       //display_string(1, "Pause");
       gamestate = 0;
@@ -69,6 +70,13 @@ void user_isr( void )
     {
       // Shoot 
       IFSCLR(1) = 0x1;
+      if ((nofProjectiles < sizeof(projectiles) / sizeof(uint16_t)) && triggerCooldown == 0)
+      {
+        projectiles[nofProjectiles] = (player / 128)*128 + 120;
+        nofProjectiles++;
+        triggerCooldown = 8;
+      }
+      
     }
     // btn4 PORTD & 0x80
     if (getbtns(3)) //& (PORTF & 0x80) 
@@ -82,7 +90,12 @@ void user_isr( void )
     {
       IFSCLR(0) = 0x100; // reset
       count++;
-      //gameloop();
+      gameloop();
+      if (triggerCooldown != 0)
+      {
+        triggerCooldown--;
+      }
+      
 
       
 

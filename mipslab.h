@@ -46,22 +46,40 @@ extern uint8_t graphics[512*8];
 
 extern const uint8_t enemyIcon[9*8];
 
+extern const uint8_t deadEnemyIcon[9*8];
+
 extern const uint8_t playerIcon[9*8];
 
 extern const uint8_t obstacleIcon[9*8];
 
-extern const uint8_t projectileIcon[4*8];
+extern const uint8_t projectileIcon[9*8];
 
-extern const uint16_t enemies[9*16];
+extern int16_t enemies[9*16];
 
-extern const uint16_t obstacles[3*16];
+extern int16_t obstacles[9*16];
 
-extern uint16_t player;
+extern int16_t projectiles[36*16];
+
+extern int16_t xEnemySpeed[8*9];
+
+extern int16_t yEnemySpeed[16*9];
+
+extern int16_t xProjectileSpeed[8*36];
+
+extern int16_t player;
 /* Declare text buffer for display output */
 extern char textbuffer[4][16];
 /* Declare GAMESTATE */
-extern uint8_t gamestate;
 
+extern uint8_t gamestate;
+extern uint8_t gameover;
+extern int scoreTimer;
+extern uint8_t level;
+extern uint8_t nofEnemies;
+extern uint8_t nofObstacles;
+extern uint8_t nofProjectiles;
+extern uint8_t triggerCooldown;
+extern uint8_t enemyMovementCount;
 /* Declare functions written by students.
    Note: Since we declare these functions here,
    students must define their functions with the exact types
