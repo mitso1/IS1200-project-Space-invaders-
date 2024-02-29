@@ -9,6 +9,7 @@
 
 /* Declare display-related functions from mipslabfunc.c */
 void display_image(int x, const uint8_t *data);
+void display_graphics(int x, const uint8_t *data);
 void display_init(void);
 void display_string(int line, char *s);
 void display_update(void);
@@ -42,11 +43,17 @@ extern const uint8_t const icon[128];
 /* Declare bitmap array containing icon */
 extern uint8_t graphics[512*8];
 
+extern const uint8_t gameover[512*8];
+
 // extern uint8_t calcGraph[8*4096];
 
 extern const uint8_t enemyIcon[9*8];
 
-extern const uint8_t deadEnemyIcon[9*8];
+extern const uint8_t deadEnemyIcon0[9*8];
+
+extern const uint8_t deadEnemyIcon1[9*8];
+
+extern const uint8_t deadEnemyIcon2[9*8];
 
 extern const uint8_t playerIcon[9*8];
 
@@ -58,11 +65,17 @@ extern const uint8_t damagedObstacleIcon2[9*8];
 
 extern const uint8_t projectileIcon[9*8];
 
-extern int16_t enemies[9*16];
+extern const int16_t startingEnemies[18*16];
 
-extern int16_t enemiesShootCount[9*16];
+extern int16_t enemies[18*16];
 
-extern const int16_t startingEnemiesShootCount[9*16];
+extern int16_t enemyDeathAnimation[18*16];
+
+extern int16_t enemiesShootCount[18*16];
+
+extern const int16_t startingEnemiesShootCount[18*16];
+
+extern const int16_t startingObstacles[12*16];
 
 extern int16_t obstacles[12*16];
 
@@ -72,9 +85,13 @@ extern int16_t projectiles[36*16];
 
 extern int16_t enemyProjectiles[36*16];
 
-extern int16_t xEnemySpeed[8*9];
+extern const int16_t startingXEnemySpeed[16*18];
 
-extern int16_t yEnemySpeed[16*9];
+extern int16_t xEnemySpeed[16*18];
+
+extern const int16_t startingYEnemySpeed[16*18];
+
+extern int16_t yEnemySpeed[16*18];
 
 extern int16_t xProjectileSpeed[8*36];
 
@@ -84,7 +101,8 @@ extern char textbuffer[4][16];
 /* Declare GAMESTATE */
 
 extern uint8_t gamestate;
-extern int scoreTimer;
+extern uint16_t score;
+extern uint8_t deathTimer;
 extern uint8_t level;
 extern uint8_t nofEnemies;
 extern uint8_t nofObstacles;

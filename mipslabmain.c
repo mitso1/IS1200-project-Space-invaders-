@@ -179,6 +179,23 @@ uint8_t calcGraph[] = {
 };
 
 void gameinit(){
+	int i, j;
+	for (i = 0; i < sizeof(enemies) / sizeof(int16_t); i++)
+	{
+		enemies[i] = startingEnemies[i];
+		xEnemySpeed[i] = startingXEnemySpeed[i];
+		yEnemySpeed[i] = startingYEnemySpeed[i];
+		enemyDeathAnimation[i] = 4;
+	}
+	for (i = 0; i < sizeof(obstacleHealth) / sizeof(int16_t); i++)
+	{
+		obstacleHealth[i] = 3;
+	}
+	nofEnemies = 18;
+	nofObstacles = 12;
+	nofProjectiles = 0;
+	nofEnemyProjectiles = 0;
+	deathTimer = 20;
 	// reset score and level and gameover variable
 	// reset positions of all
 	// restart timer
@@ -248,7 +265,7 @@ void enemyShoot(int i){
         nofEnemyProjectiles++;
 		enemiesShootCount[i] = startingEnemiesShootCount[enemyRndAssignment];
 		enemyRndAssignment++;
-		if (enemyRndAssignment == 9)
+		if (enemyRndAssignment == 18)
 		{
 			enemyRndAssignment = 0;
 		}
@@ -335,26 +352,57 @@ void gameloop(){
 			{
 				if (checkCollision(enemies[j], projectiles[i]))
 				{
-					removeItem(enemies, j, nofEnemies);
-					removeItem(xEnemySpeed, j, nofEnemies);
-					removeItem(yEnemySpeed, j, nofEnemies);
-					nofEnemies--;
+					enemyDeathAnimation[j]--;
 					removeItem(projectiles, i, nofProjectiles);
 					nofProjectiles--;
 				}
 			}
 		}
+		for (i = 0; i < nofEnemies; i++)
+		{
+			if (enemyDeathAnimation[i] == 0)
+			{
+				removeItem(enemies, i, nofEnemies);
+				removeItem(xEnemySpeed, i, nofEnemies);
+				removeItem(yEnemySpeed, i, nofEnemies);
+				removeItem(enemyDeathAnimation, i, nofEnemies);
+				nofEnemies--;
+			}
+			else if(enemyDeathAnimation[i] < 4)
+			{
+				enemyDeathAnimation[i]--;
+			}
+		}
+		
 		
 		// game over
-		for (i = 0; i < nofEnemyProjectiles; i++)
-		{
-			if (checkCollision(player, enemyProjectiles[i]))
+			for (i = 0; i < nofEnemyProjectiles; i++)
 			{
-				removeItem(enemyProjectiles, i, nofEnemyProjectiles);
-				gamestate = 0;//change to 3
+				if (checkCollision(player, enemyProjectiles[i]))
+				{
+					removeItem(enemyProjectiles, i, nofEnemyProjectiles);
+					deathTimer--;
+				}
+			}
+			for (i = 0; i < nofEnemies; i++)
+			{
+				if (enemies[i] % 128 >= 107)
+				{
+					deathTimer--;
+				}
+				
+			}
+			if (deathTimer < 20)
+			{
+				deathTimer--;
+			}
+			if (deathTimer == 0)
+			{
+				gamestate = 3;//change to 3
 			}
 			
-		}
+		//
+		
 				// score
 
 		// remove objects
@@ -386,14 +434,7 @@ void gameloop(){
 		{
 			enemyShoot(i);
 		}
-		
-
-		// update display
-		
 	}
-	
-
-
 }
 
 uint8_t getbtns(int btnindex){
@@ -401,39 +442,6 @@ uint8_t getbtns(int btnindex){
 	uint8_t temp = ((PORTD & 0xE0) >> 4) | ((PORTF & 0x2) >> 1);
 	return (temp & (0x1 << btnindex));
 }
-
-/* int convPosition(uint16_t pos){
-	int temp = 0;
-	int i;
-	for (i = 0; i < 32; i++)
-	{
-		int j;
-		for (j = 0; j < 128; j++)
-		{
-			if ((int) pos == j + i*128)
-			{
-				temp = j + ((i/8) * 128);
-			}	
-		}
-	}
-	return (int)temp;
-}
-uint8_t calcOffset(uint16_t pos){
-	int i;
-	for (i = 0; i < 32; i++)
-	{
-		int j;
-		for (j = 0; j < 128; j++)
-		{
-			if (pos == j + i*128)
-			{
-				return (uint8_t) i % 8;
-			}	
-		}
-	}
-
-} */
-
 
 void drawIcon(int pos, const uint8_t icon[]){
 	int i;
@@ -457,30 +465,6 @@ void drawGraphics(){
 		/* code */
 		calcGraph[i] = 0;
 	}
-	/* display_image(96, icon);
-	//display_texture(convPosition(player)124, playerIcon);
-	if (playerLastPos != player)
-	{
-		//clr_texture(convPosition(playerLastPos)0, playerIcon);
-		//display_texture(convPosition(player)123, playerIcon);
-		playerLastPos = player;
-	} */
-	
-	/* for (i = 0; i < 9; i++)
-	{
-		if (obstacleLastPos[i] != obstacles[i])
-		{
-			clr_texture(convPosition(obstacleLastPos[i]), obstacleIcon, calcOffset(obstacleLastPos[i]));
-			display_texture(convPosition(obstacles[i]), obstacleIcon, calcOffset(obstacles[i]));
-			obstacleLastPos[i] = obstacles[i];
-		}
-		if (enemiesLastPos[i] != enemies[i])
-		{
-			clr_texture(convPosition(enemiesLastPos[i]), enemyIcon, calcOffset(enemiesLastPos[i]));
-			display_texture(convPosition(enemies[i]), enemyIcon, calcOffset(enemies[i]));
-			enemiesLastPos[i] = enemies[i];
-		}
-	}  */
 	
 	//display_texture(convPosition(player), playerIcon);
 	for (i = 0; i < 4096; i++)
@@ -490,7 +474,21 @@ void drawGraphics(){
 		{
 			if (enemies[j] == i)
 			{
-				drawIcon(i, enemyIcon);		
+				switch (enemyDeathAnimation[j])
+				{
+				case 0:
+					drawIcon(i, deadEnemyIcon0);		
+					break;
+				case 1:
+					drawIcon(i, deadEnemyIcon1);		
+					break;
+				case 2:
+					drawIcon(i, deadEnemyIcon2);		
+					break;
+				default:
+					drawIcon(i, enemyIcon);		
+					break;
+				}		
 			}
 		}
 		for (j = 0; j < nofObstacles; j++)
@@ -529,7 +527,24 @@ void drawGraphics(){
 
 		if (player == i)
 		{
-			drawIcon(i, playerIcon);		
+			switch (deathTimer)
+				{
+				case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:		
+					break;
+				case 10: case 11:
+					drawIcon(i, deadEnemyIcon0);		
+					break;
+				case 12: case 13:
+					drawIcon(i, deadEnemyIcon1);		
+					break;
+				case 14: case 15:
+					drawIcon(i, deadEnemyIcon2);		
+					break;
+				default:
+					drawIcon(i, playerIcon);		
+					break;
+				}
+					
 		}
 		
 	}
@@ -557,6 +572,10 @@ void convGraph(){
 		
 	}
 	
+}
+
+void leaderboard(){
+
 }
 
 int main(void) {

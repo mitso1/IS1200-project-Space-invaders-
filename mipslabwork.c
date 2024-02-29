@@ -60,7 +60,8 @@ void user_isr( void )
     {
       // Move Right 
       IFSCLR(1) = 0x1;
-      player -= 256;
+      if ((player / 128) > 1)
+        player -= 128;
     }
     // btn3 PORTD & 0x40
     if (getbtns(2)) //& (PORTD & 0x40)
@@ -71,7 +72,7 @@ void user_isr( void )
       {
         projectiles[nofProjectiles] = (player / 128)*128 + 120;
         nofProjectiles++;
-        triggerCooldown = 8;
+        triggerCooldown = 10; // 500 ms cooldown for shooting
       }
       
     }
@@ -80,7 +81,8 @@ void user_isr( void )
     {
       // Move left 
       IFSCLR(1) = 0x1;
-      player += 256;
+      if((player) < 3837 - 256) //124
+        player += 128;
     }
 
     if (IFS(0) & 0x100)
@@ -122,14 +124,13 @@ void user_isr( void )
 
   if (gamestate == 3)
   {
-    if (1) // btn4
+    if (getbtns(0)) 
     {
-      /* New game */
+      IFSCLR(0) = 0x100;
+      gamestate = 0;
     }
-    if (1) // btn3
-    {
-      /* Save Score */
-    }
+    display_graphics(0, gameover);
+  
   }
   
   if (gamestate == 4)
