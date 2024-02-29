@@ -9,6 +9,7 @@
 
 #include <stdint.h>   /* Declarations of uint_32 and the like */
 #include <stdlib.h>
+#include <stdio.h>
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 // #include "mipslabdata.c"
@@ -187,23 +188,38 @@ void gameinit(){
 		yEnemySpeed[i] = startingYEnemySpeed[i];
 		enemyDeathAnimation[i] = 4;
 	}
-	for (i = 0; i < sizeof(obstacleHealth) / sizeof(int16_t); i++)
+	for (i = 0; i < sizeof(obstacles) / sizeof(int16_t); i++)
 	{
+		obstacles[i] = startingObstacles[i];
 		obstacleHealth[i] = 3;
 	}
-	nofEnemies = 18;
+	nofEnemies = 3;
 	nofObstacles = 12;
 	nofProjectiles = 0;
 	nofEnemyProjectiles = 0;
 	deathTimer = 20;
+	level = 0;
+	score = 0;
 	// reset score and level and gameover variable
 	// reset positions of all
 	// restart timer
 
 }
 
-void levelinit(uint8_t level){
-
+void levelinit(){
+	int i;
+	for (i = 0; i < sizeof(enemies) / sizeof(int16_t); i++)
+	{
+		enemies[i] = startingEnemies[i];
+		xEnemySpeed[i] = startingXEnemySpeed[i];
+		yEnemySpeed[i] = startingYEnemySpeed[i];
+		enemyDeathAnimation[i] = 4;
+	}
+	nofEnemies = 3 + (level * 3);
+	nofProjectiles = 0;
+	nofEnemyProjectiles = 0;
+	deathTimer = 20;
+	score = 2000*level;
 }
 
 uint8_t checkCollision(int16_t obj1, int16_t projectile){
@@ -259,7 +275,7 @@ void removeItem(int16_t items[], int index, int nofItems){
 
 void enemyShoot(int i){
 	enemiesShootCount[i]--;
-	if (enemiesShootCount[i] == 0)
+	if (enemiesShootCount[i] / (level + 1) == 0) // Level 2, enemies shoot 2x faster, level3, 3x faster... 
 	{
 		enemyProjectiles[nofEnemyProjectiles] = (enemies[i] / 128)*128 + (enemies[i] % 128);
         nofEnemyProjectiles++;
@@ -296,10 +312,14 @@ void obstacleHit(int16_t proj[], uint8_t nofProj){
 }
 
 void gameloop(){
-	if (gamestate != 3)
+	if (gamestate == 1 && level == 6)
+	{
+		gamestate = 3;
+	}
+	if (gamestate == 1)
 	{
 		int i,j;
-		scoreTimer++;
+		
 
 		// Check collision
 		for (i = 0; i < nofProjectiles; i++)
@@ -367,6 +387,7 @@ void gameloop(){
 				removeItem(yEnemySpeed, i, nofEnemies);
 				removeItem(enemyDeathAnimation, i, nofEnemies);
 				nofEnemies--;
+				score += 100;
 			}
 			else if(enemyDeathAnimation[i] < 4)
 			{
@@ -398,7 +419,13 @@ void gameloop(){
 			}
 			if (deathTimer == 0)
 			{
-				gamestate = 3;//change to 3
+				if (score > highscore)
+				{
+					gamestate = 3;
+				}
+				else{
+					gamestate = 2;//change to 3
+				}
 			}
 			
 		//
@@ -408,7 +435,13 @@ void gameloop(){
 		// remove objects
 		obstacleHit(projectiles, nofProjectiles);
 		obstacleHit(enemyProjectiles, nofEnemyProjectiles);
-			// level up
+			
+		if (nofEnemies == 0)
+		{
+			level++;
+			levelinit();
+		}
+		
 
 		// Calc/set movement speed/direction for enemies, projectiles and obstacles
 
@@ -574,8 +607,54 @@ void convGraph(){
 	
 }
 
-void leaderboard(){
+// Swap function
+void swap(uint16_t* xp, uint16_t* yp) {
+    uint16_t temp = *xp;
+    *xp = *yp;
+    *yp = temp;
+}
 
+// Selection sort function
+void selectionSort(uint16_t arr[], int n) {
+    int i, j, min_idx;
+    for (i = 0; i < n - 1; i++) {
+        min_idx = i;
+        for (j = i + 1; j < n; j++) {
+            if (arr[j] > arr[min_idx]) {
+                min_idx = j;
+            }
+        }
+        swap(&arr[min_idx], &arr[i]);
+    }
+}
+
+void saveHighscore(){
+	int i;
+	int val = 10;
+	display_string(0, "HIGHSCORE!");
+	
+	char temp[] = "You got: ";
+	for (i = 0; i < 5; i++)
+	{
+		temp[9 + i] = (char)hexasc(i/* (score / (100000 / val)) */);
+		score -= (100000 / val) * ((score) / (100000 / val)); // 34000 becomes 4000
+		val *= 10;
+	}
+	display_string(1, temp);
+	display_string(2, "Save Higscore?");
+	display_string(3, "Y=btn4 N=btn3");
+
+	if (getbtns(3))
+	{
+		highscores[nofHighscores] = score;
+		selectionSort(highscores, nofHighscores);
+		gamestate = 4;
+	}
+	if (getbtns(2))
+	{
+		gamestate = 0;
+	}
+	display_update();
 }
 
 int main(void) {
@@ -654,10 +733,10 @@ int main(void) {
 	  		labwork(); /* Do lab-specific things again and again */
 			break;
 		case 2:
-			/* Pause menu */
+			/* Game over */
 			break;
 		case 3:
-			/* Game over */
+			/* Save highscore */
 			break;
 		case 4:
 			/* Leaderboard */

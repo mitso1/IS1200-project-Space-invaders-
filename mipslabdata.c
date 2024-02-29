@@ -407,13 +407,13 @@ int16_t obstacleHealth[] = {
 };
 
 
-int16_t projectiles[16*36];/*  {
+int16_t projectiles[2*144];/*  {
 	0*128 + 118, 5000, 5000,
 	5000, 5000, 5000,
 	5000, 5000, 5000,
 }; */
 
-int16_t enemyProjectiles[16*36];/*  {
+int16_t enemyProjectiles[2*144];/*  {
 	0*128 + 118, 5000, 5000,
 	5000, 5000, 5000,
 	5000, 5000, 5000,
@@ -461,23 +461,23 @@ int16_t yEnemySpeed[] = {
 
 // Simultating random
 	const int16_t startingEnemiesShootCount[] = {
-		736, 981, 31, 
-		23, 917, 128, 
-		83, 542, 110,
+		136, 281, 31, 
+		23, 117, 128, 
+		83, 42, 10,
 
-		284, 93, 291, 
-		500, 482, 39, 
-		830, 203, 69,
+		184, 93, 31, 
+		25, 82, 39, 
+		73, 203, 69,
 	};
 
 	int16_t enemiesShootCount[] = {
-		736, 981, 31, 
-		23, 917, 128, 
-		83, 542, 110,
+		136, 281, 31, 
+		23, 117, 128, 
+		83, 42, 10,
 
-		284, 93, 291, 
-		500, 482, 39, 
-		830, 203, 69,
+		184, 93, 31, 
+		25, 82, 39, 
+		73, 203, 69,
 	};
 // 
 
@@ -496,10 +496,14 @@ int16_t xProjectileSpeed[] = {
 	-2, -2, -2,
 };
 
+int16_t highscores[2*128];
+
 int16_t player = 20*128 + 123;
 
 uint8_t gamestate = 0;
 uint16_t score = 0;
+uint16_t highscore = 0;
+uint16_t nofHighscores = 0;
 uint8_t deathTimer = 20;
 uint8_t level = 0;
 uint8_t nofEnemies = 18;

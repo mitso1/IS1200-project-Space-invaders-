@@ -72,7 +72,7 @@ void user_isr( void )
       {
         projectiles[nofProjectiles] = (player / 128)*128 + 120;
         nofProjectiles++;
-        triggerCooldown = 10; // 500 ms cooldown for shooting
+        triggerCooldown = 8; // 400 ms cooldown for shooting
       }
       
     }
@@ -112,46 +112,29 @@ void user_isr( void )
 
   if (gamestate == 2)
   {
-    if (1) // btn4
+    IFSCLR(0) = 0x100;
+    display_graphics(0, gameover);
+    if (getbtns(0)) 
     {
-      /* New game */
+      IFSCLR(0) = 0x100;
+      gamestate = 0;
     }
-    if (1) // btn3
-    {
-      /* Resume */
-    }
+    
   }
 
   if (gamestate == 3)
+  {
+    saveHighscore(); 
+  }
+  
+  if (gamestate == 4)
   {
     if (getbtns(0)) 
     {
       IFSCLR(0) = 0x100;
       gamestate = 0;
     }
-    display_graphics(0, gameover);
-  
-  }
-  
-  if (gamestate == 4)
-  {
-    if (1) // btn4
-    {
-      /* Letter select left */
-    }
-    if (1) // btn2
-    {
-      /* Letter select right */
-    }
-    if (1) // btn3
-    {
-      /* Letter save */
-    }
-
-    if (1) // btn1
-    {
-      /* Main menu */
-    }
+    
   }
   
   

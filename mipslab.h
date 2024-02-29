@@ -41,59 +41,61 @@ extern const uint8_t const font[128*8];
 /* Declare bitmap array containing icon */
 extern const uint8_t const icon[128];
 /* Declare bitmap array containing icon */
-extern uint8_t graphics[512*8];
+extern uint8_t graphics[];
 
-extern const uint8_t gameover[512*8];
+extern const uint8_t gameover[512*1];
 
 // extern uint8_t calcGraph[8*4096];
 
-extern const uint8_t enemyIcon[9*8];
+extern const uint8_t enemyIcon[9*1];
 
-extern const uint8_t deadEnemyIcon0[9*8];
+extern const uint8_t deadEnemyIcon0[9*1];
 
-extern const uint8_t deadEnemyIcon1[9*8];
+extern const uint8_t deadEnemyIcon1[9*1];
 
-extern const uint8_t deadEnemyIcon2[9*8];
+extern const uint8_t deadEnemyIcon2[9*1];
 
-extern const uint8_t playerIcon[9*8];
+extern const uint8_t playerIcon[9*1];
 
-extern const uint8_t obstacleIcon[9*8];
+extern const uint8_t obstacleIcon[9*1];
 
-extern const uint8_t damagedObstacleIcon1[9*8];
+extern const uint8_t damagedObstacleIcon1[9*1];
 
-extern const uint8_t damagedObstacleIcon2[9*8];
+extern const uint8_t damagedObstacleIcon2[9*1];
 
-extern const uint8_t projectileIcon[9*8];
+extern const uint8_t projectileIcon[9*1];
 
-extern const int16_t startingEnemies[18*16];
+extern const int16_t startingEnemies[18*2];
 
-extern int16_t enemies[18*16];
+extern int16_t enemies[18*2];
 
-extern int16_t enemyDeathAnimation[18*16];
+extern int16_t enemyDeathAnimation[18*2];
 
-extern int16_t enemiesShootCount[18*16];
+extern int16_t enemiesShootCount[18*2];
 
-extern const int16_t startingEnemiesShootCount[18*16];
+extern const int16_t startingEnemiesShootCount[18*2];
 
-extern const int16_t startingObstacles[12*16];
+extern const int16_t startingObstacles[12*2];
 
-extern int16_t obstacles[12*16];
+extern int16_t obstacles[12*2];
 
-extern int16_t obstacleHealth[12*16];
+extern int16_t obstacleHealth[12*2];
 
-extern int16_t projectiles[36*16];
+extern int16_t projectiles[144*2];
 
-extern int16_t enemyProjectiles[36*16];
+extern int16_t enemyProjectiles[144*2];
 
-extern const int16_t startingXEnemySpeed[16*18];
+extern const int16_t startingXEnemySpeed[2*18];
 
-extern int16_t xEnemySpeed[16*18];
+extern int16_t xEnemySpeed[2*18];
 
-extern const int16_t startingYEnemySpeed[16*18];
+extern const int16_t startingYEnemySpeed[2*18];
 
-extern int16_t yEnemySpeed[16*18];
+extern int16_t yEnemySpeed[2*18];
 
-extern int16_t xProjectileSpeed[8*36];
+extern int16_t xProjectileSpeed[2*36];
+
+int16_t highscores[2*128];
 
 extern int16_t player;
 /* Declare text buffer for display output */
@@ -102,6 +104,8 @@ extern char textbuffer[4][16];
 
 extern uint8_t gamestate;
 extern uint16_t score;
+extern uint16_t highscore;
+extern uint16_t nofHighscores;
 extern uint8_t deathTimer;
 extern uint8_t level;
 extern uint8_t nofEnemies;
@@ -118,6 +122,7 @@ extern uint8_t enemyRndAssignment;
 /* Written as part of asm lab: delay, time2string */
 void delay(int);
 void time2string( char *, int );
+char hexasc(int);
 /* Written as part of i/o lab: getbtns, getsw, enable_interrupt */
 uint8_t getbtns(int);
 int getsw(void);
