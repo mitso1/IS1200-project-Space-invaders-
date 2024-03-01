@@ -249,7 +249,7 @@ void display_update(void) {
 	}
 }
 
-void display_update_custom(void) {
+/* void display_update_custom(void) {
 	int i, j, k;
 	int c;
 	for(i = 0; i < 4; i++) {
@@ -271,7 +271,7 @@ void display_update_custom(void) {
 				spi_send_recv(font[c*8 + k]);
 		}
 	}
-}
+} */
 
 /* Helper function, local to this file.
    Converts a number to hexadecimal ASCII digits. */

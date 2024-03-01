@@ -31,6 +31,12 @@ void user_isr( void )
 
   if (gamestate == 0)
   {
+    display_string(0, "SPACE INVADERS!");
+    display_string(1, " ");
+    display_string(2, "1: NEW GAME");
+    display_string(3, "2: LEADERBOARDS");
+    
+    display_update();
     if (getbtns(3)) //& (PORTF & 0x80) btn4 
     {
       IFSCLR(0) = 0x100;
@@ -134,8 +140,6 @@ void user_isr( void )
     IFSCLR(0) = 0x100;
     leaderboard();
     display_update();
-
-
     if (getbtns(0)) 
     {
       gamestate = 0;

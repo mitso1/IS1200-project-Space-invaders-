@@ -765,12 +765,7 @@ int main(void) {
 		{
 		case 0:
 			/* Main menu */
-			display_string(0, "SPACE INVADERS!");
-			display_string(1, " ");
-			display_string(2, "1: NEW GAME");
-			display_string(3, "2: LEADERBOARDS");
 			
-			display_update();
 			//labwork();
 			break;
 		case 1:
