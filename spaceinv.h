@@ -95,7 +95,9 @@ extern int16_t yEnemySpeed[2*18];
 
 extern int16_t xProjectileSpeed[2*36];
 
-int16_t highscores[2*128];
+extern int16_t highscores[5*128];
+
+extern char hsInitials[32][2*2];
 
 extern int16_t player;
 /* Declare text buffer for display output */
@@ -108,6 +110,8 @@ extern uint16_t highscore;
 extern uint16_t nofHighscores;
 extern uint8_t deathTimer;
 extern uint8_t level;
+extern uint8_t currentPage;
+extern uint8_t currentChar;
 extern uint8_t nofEnemies;
 extern uint8_t nofObstacles;
 extern uint8_t nofProjectiles;

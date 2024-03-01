@@ -6,7 +6,7 @@
 
 #include <stdint.h>   /* Declarations of uint_32 and the like */
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
-#include "mipslab.h"  /* Declatations for these labs */
+#include "spaceinv.h"  /* Declatations for these labs */
 
 char textbuffer[4][16];
 
@@ -407,17 +407,9 @@ int16_t obstacleHealth[] = {
 };
 
 
-int16_t projectiles[2*144];/*  {
-	0*128 + 118, 5000, 5000,
-	5000, 5000, 5000,
-	5000, 5000, 5000,
-}; */
+int16_t projectiles[2*144];
 
-int16_t enemyProjectiles[2*144];/*  {
-	0*128 + 118, 5000, 5000,
-	5000, 5000, 5000,
-	5000, 5000, 5000,
-}; */
+int16_t enemyProjectiles[2*144];
 
 const int16_t startingXEnemySpeed[] = {
 	1, 1, 1,
@@ -496,7 +488,8 @@ int16_t xProjectileSpeed[] = {
 	-2, -2, -2,
 };
 
-int16_t highscores[2*128];
+int16_t highscores[5*128];
+
 
 int16_t player = 20*128 + 123;
 
@@ -506,6 +499,8 @@ uint16_t highscore = 0;
 uint16_t nofHighscores = 0;
 uint8_t deathTimer = 20;
 uint8_t level = 0;
+uint8_t currentPage = 0;
+uint8_t currentChar = 0;
 uint8_t nofEnemies = 18;
 uint8_t nofObstacles = 12;
 uint8_t nofProjectiles = 0;

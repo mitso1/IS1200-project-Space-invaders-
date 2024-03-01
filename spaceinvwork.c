@@ -14,7 +14,7 @@
 
 #include <stdint.h>   /* Declarations of uint_32 and the like */
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
-#include "mipslab.h"  /* Declatations for these labs */
+#include "spaceinv.h"  /* Declatations for these labs */
 int prime = 1234567;
 int mytime = 0x5957;
 int  count = 0;
@@ -36,6 +36,12 @@ void user_isr( void )
       IFSCLR(0) = 0x100;
       gameinit();
       gamestate = 1;
+    }
+    if (getbtns(2)) //& (PORTF & 0x80) btn4 
+    {
+      IFSCLR(0) = 0x100;
+      gameinit();
+      gamestate = 4;
     }
     if (IFS(0) & 0x100)
     {
@@ -94,20 +100,10 @@ void user_isr( void )
       {
         triggerCooldown--;
       }
-      
-
-      
-
-        //display_update();
       drawGraphics();
       convGraph();
       display_graphics(0, graphics);
-      //display_image(96, icon);
-      
-
     }
-
-
   }
 
   if (gamestate == 2)
@@ -124,17 +120,26 @@ void user_isr( void )
 
   if (gamestate == 3)
   {
-    saveHighscore(); 
+    IFSCLR(0) = 0x100;
+    saveHighscore(score); 
   }
+  
+  /* if (gamestate == 4)
+  {
+    chooseInitials(); 
+  } */
   
   if (gamestate == 4)
   {
+    IFSCLR(0) = 0x100;
+    leaderboard();
+    display_update();
+
+
     if (getbtns(0)) 
     {
-      IFSCLR(0) = 0x100;
       gamestate = 0;
     }
-    
   }
   
   

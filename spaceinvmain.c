@@ -1,17 +1,19 @@
-/* mipslabmain.c
+/* spaceinvmain.c
 
    This file written 2015 by Axel Isaksson,
    modified 2015, 2017 by F Lundevall
+   modified 2024 by Adam Brolin and Athanasios Kotronias
 
-   Latest update 2017-04-21 by F Lundevall
+   Latest update 2024-02-29 by Adam Brolin and Athanasios Kotronias
 
    For copyright and licensing, see file COPYING */
 
 #include <stdint.h>   /* Declarations of uint_32 and the like */
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
-#include "mipslab.h"  /* Declatations for these labs */
+#include "spaceinv.h"  /* Declatations for these labs */
 // #include "mipslabdata.c"
 
 
@@ -179,6 +181,9 @@ uint8_t calcGraph[] = {
 	
 };
 
+
+/* Written by A Brolin
+Sets all important game variables to necessary values*/
 void gameinit(){
 	int i, j;
 	for (i = 0; i < sizeof(enemies) / sizeof(int16_t); i++)
@@ -200,12 +205,10 @@ void gameinit(){
 	deathTimer = 20;
 	level = 0;
 	score = 0;
-	// reset score and level and gameover variable
-	// reset positions of all
-	// restart timer
-
 }
 
+/* Written by A Kotronios
+Sets necessary variables to different values depending on level */
 void levelinit(){
 	int i;
 	for (i = 0; i < sizeof(enemies) / sizeof(int16_t); i++)
@@ -219,9 +222,12 @@ void levelinit(){
 	nofProjectiles = 0;
 	nofEnemyProjectiles = 0;
 	deathTimer = 20;
-	score = 2000*level;
+	score = 200*level;
 }
 
+/* Written by A Brolin
+Checks if the two param intersects
+takes sprite size into account */
 uint8_t checkCollision(int16_t obj1, int16_t projectile){
 	int i, j;
 	for (i = 0; i < 5; i++)
@@ -239,7 +245,8 @@ uint8_t checkCollision(int16_t obj1, int16_t projectile){
 	return 0;
 }
 
-/* returns; 
+/* Written by A Kotronios
+returns; 
 	0 if inside bounds
 	1 if at x-axis border 
 	2 if at y-axis borer 
@@ -260,6 +267,8 @@ uint8_t outOfBounds(int16_t obj){
 	return temp;
 }
 
+/* Written by A Kotronios
+Removes item from itemarray and corrects the following item positions */
 void removeItem(int16_t items[], int index, int nofItems){
 	int i;
 	if (nofItems != 1)
@@ -273,6 +282,9 @@ void removeItem(int16_t items[], int index, int nofItems){
 	items[nofItems - 1] = 5000;
 }
 
+/* Written by A Kotronios & A Brolin
+Decrements enemies shooting countdown
+if countdown is finished then spawn an enemyprojectile at correct position */
 void enemyShoot(int i){
 	enemiesShootCount[i]--;
 	if (enemiesShootCount[i] / (level + 1) == 0) // Level 2, enemies shoot 2x faster, level3, 3x faster... 
@@ -289,6 +301,8 @@ void enemyShoot(int i){
 	}
 }
 
+/* Written by A Brolin
+Checks if obstacles has been hit and handles obstacle texture and removal */
 void obstacleHit(int16_t proj[], uint8_t nofProj){
 	int i,j;
 	for (i = 0; i < nofProj; i++)
@@ -311,6 +325,9 @@ void obstacleHit(int16_t proj[], uint8_t nofProj){
 		}
 }
 
+/* Written by A Kotronios & A Brolin
+Main gameplay loop, handles everething that happens during a game
+calls on the functions above */
 void gameloop(){
 	if (gamestate == 1 && level == 6)
 	{
@@ -319,93 +336,89 @@ void gameloop(){
 	if (gamestate == 1)
 	{
 		int i,j;
-		
-
 		// Check collision
-		for (i = 0; i < nofProjectiles; i++)
-		{
-			if (outOfBounds(projectiles[i]))
+			for (i = 0; i < nofProjectiles; i++)
 			{
-				/* xProjectileSpeed[i] *= -1;  */
-				removeItem(projectiles, i, nofProjectiles);
-				nofProjectiles--;
-			}
-		}
-		for (i = 0; i < nofEnemyProjectiles; i++)
-		{
-			if (outOfBounds(enemyProjectiles[i]))
-			{
-				/* xProjectileSpeed[i] *= -1;  */
-				removeItem(enemyProjectiles, i, nofEnemyProjectiles);
-				nofEnemyProjectiles--;
-			}
-		}
-		if (enemyMovementCount == 8)
-		{
-			for (i = 0; i < nofEnemies; i++)
-			{
-				switch (outOfBounds(enemies[i]))
+				if (outOfBounds(projectiles[i]))
 				{
-				case 0:
-					break;
-				case 1:
-					xEnemySpeed[i] *= -1;
-					break;
-				case 2:
-					yEnemySpeed[i] *= -1;
-					break;
-				case 3:
-					xEnemySpeed[i] *= -1;
-					yEnemySpeed[i] *= -1;
-					break;
-				
-				default:
-					break;
-				}
-			}
-		}
-		
-		// kill enemies
-		for (i = 0; i < nofProjectiles; i++)
-		{
-			for (j = 0; j < nofEnemies; j++)
-			{
-				if (checkCollision(enemies[j], projectiles[i]))
-				{
-					enemyDeathAnimation[j]--;
 					removeItem(projectiles, i, nofProjectiles);
 					nofProjectiles--;
 				}
 			}
-		}
-		for (i = 0; i < nofEnemies; i++)
-		{
-			if (enemyDeathAnimation[i] == 0)
+			for (i = 0; i < nofEnemyProjectiles; i++)
 			{
-				removeItem(enemies, i, nofEnemies);
-				removeItem(xEnemySpeed, i, nofEnemies);
-				removeItem(yEnemySpeed, i, nofEnemies);
-				removeItem(enemyDeathAnimation, i, nofEnemies);
-				nofEnemies--;
-				score += 100;
+				if (outOfBounds(enemyProjectiles[i]))
+				{
+					removeItem(enemyProjectiles, i, nofEnemyProjectiles);
+					nofEnemyProjectiles--;
+				}
 			}
-			else if(enemyDeathAnimation[i] < 4)
+			if (enemyMovementCount == 8)
 			{
-				enemyDeathAnimation[i]--;
+				for (i = 0; i < nofEnemies; i++)
+				{
+					switch (outOfBounds(enemies[i]))
+					{
+					case 0:
+						break;
+					case 1:
+						xEnemySpeed[i] *= -1;
+						break;
+					case 2:
+						yEnemySpeed[i] *= -1;
+						break;
+					case 3:
+						xEnemySpeed[i] *= -1;
+						yEnemySpeed[i] *= -1;
+						break;
+					
+					default:
+						break;
+					}
+				}
 			}
-		}
-		
+		//
+		// kill enemies
+			for (i = 0; i < nofProjectiles; i++)
+			{
+				for (j = 0; j < nofEnemies; j++)
+				{
+					if (checkCollision(enemies[j], projectiles[i])) // Starts death animation
+					{
+						enemyDeathAnimation[j]--;
+						removeItem(projectiles, i, nofProjectiles);
+						nofProjectiles--;
+					}
+				}
+			}
+			for (i = 0; i < nofEnemies; i++)
+			{
+				if (enemyDeathAnimation[i] == 0) // kills enemy and adds score
+				{
+					removeItem(enemies, i, nofEnemies);
+					removeItem(xEnemySpeed, i, nofEnemies);
+					removeItem(yEnemySpeed, i, nofEnemies);
+					removeItem(enemyDeathAnimation, i, nofEnemies);
+					nofEnemies--;
+					score += 10;
+				}
+				else if(enemyDeathAnimation[i] < 4)
+				{
+					enemyDeathAnimation[i]--; // Animates enemy death
+				}
+			}
+		//
 		
 		// game over
 			for (i = 0; i < nofEnemyProjectiles; i++)
 			{
-				if (checkCollision(player, enemyProjectiles[i]))
+				if (checkCollision(player, enemyProjectiles[i])) // Player is shot
 				{
 					removeItem(enemyProjectiles, i, nofEnemyProjectiles);
 					deathTimer--;
 				}
 			}
-			for (i = 0; i < nofEnemies; i++)
+			for (i = 0; i < nofEnemies; i++) // Enemies gets too close
 			{
 				if (enemies[i] % 128 >= 107)
 				{
@@ -413,29 +426,26 @@ void gameloop(){
 				}
 				
 			}
-			if (deathTimer < 20)
+			if (deathTimer < 20) // Handles death animation
 			{
 				deathTimer--;
 			}
-			if (deathTimer == 0)
+			if (deathTimer == 0) // Game over
 			{
 				if (score > highscore)
 				{
 					gamestate = 3;
+					highscore = score;
 				}
 				else{
 					gamestate = 2;//change to 3
 				}
 			}
-			
 		//
-		
-				// score
-
-		// remove objects
-		obstacleHit(projectiles, nofProjectiles);
-		obstacleHit(enemyProjectiles, nofEnemyProjectiles);
-			
+		// Obstacle damage animation and removal
+			obstacleHit(projectiles, nofProjectiles);
+			obstacleHit(enemyProjectiles, nofEnemyProjectiles);
+		//	
 		if (nofEnemies == 0)
 		{
 			level++;
@@ -470,12 +480,16 @@ void gameloop(){
 	}
 }
 
+/* Written by A Brolin
+returns button that is selectet by param */
 uint8_t getbtns(int btnindex){
 
 	uint8_t temp = ((PORTD & 0xE0) >> 4) | ((PORTF & 0x2) >> 1);
 	return (temp & (0x1 << btnindex));
 }
 
+/* Written by A Kotronios
+Draws correct texture (3x3) at the corrext position */
 void drawIcon(int pos, const uint8_t icon[]){
 	int i;
 	for (i = 0; i < 3; i++)
@@ -489,7 +503,8 @@ void drawIcon(int pos, const uint8_t icon[]){
 		
 	}
 }
-//calcGraph
+/* Written by A Kotronios & A Brolin
+determines what textore to write and where depending on enemy/player/obs position */
 void drawGraphics(){
 	
 	int i;
@@ -557,7 +572,7 @@ void drawGraphics(){
 			}
 		}
 		
-
+		
 		if (player == i)
 		{
 			switch (deathTimer)
@@ -586,6 +601,8 @@ void drawGraphics(){
 	
 }
 
+/* Written by A Brolin
+converts graphics format from 128x32 (1bit) to 128x4 (8bit) */
 void convGraph(){
 	int block = 0;
 	int i;
@@ -593,7 +610,7 @@ void convGraph(){
 	{
 		if (i % 128 == 0 && i != 0)
 		{
-			block += 128*7;
+			block += 128*7; // block + i is page offset
 		}
 		
 		graphics[i] = 0; // (calcGraph[i] | calcGraph[(i+1) * 128] << 1)
@@ -608,6 +625,7 @@ void convGraph(){
 }
 
 // Swap function
+// Standard selection sort, not written by us
 void swap(uint16_t* xp, uint16_t* yp) {
     uint16_t temp = *xp;
     *xp = *yp;
@@ -615,48 +633,74 @@ void swap(uint16_t* xp, uint16_t* yp) {
 }
 
 // Selection sort function
+// Standard selection sort, not written by us
 void selectionSort(uint16_t arr[], int n) {
-    int i, j, min_idx;
-    for (i = 0; i < n - 1; i++) {
-        min_idx = i;
-        for (j = i + 1; j < n; j++) {
-            if (arr[j] > arr[min_idx]) {
-                min_idx = j;
+    int i, j, min;
+    for (i = 0; i < n - 1; i++) 
+	{
+        min = i;
+        for (j = i + 1; j < n; j++) 
+		{
+            if (arr[j] > arr[min]) {
+                min = j;
             }
         }
-        swap(&arr[min_idx], &arr[i]);
+        swap(&arr[min], &arr[i]);
     }
 }
 
-void saveHighscore(){
-	int i;
-	int val = 10;
+
+/* Written by A Kotronios & A Brolin
+Saves highscore to a array and increments amount of highscores */
+void saveHighscore(uint16_t tempScore){
+	char temp[] = "      ";
 	display_string(0, "HIGHSCORE!");
-	
-	char temp[] = "You got: ";
-	for (i = 0; i < 5; i++)
-	{
-		temp[9 + i] = (char)hexasc(i/* (score / (100000 / val)) */);
-		score -= (100000 / val) * ((score) / (100000 / val)); // 34000 becomes 4000
-		val *= 10;
-	}
-	display_string(1, temp);
-	display_string(2, "Save Higscore?");
-	display_string(3, "Y=btn4 N=btn3");
+	display_string(1, "YOU GOT: ");
+	display_string(2, " ");
+	display_string(3, itoaconv(tempScore));
+	display_update();
 
 	if (getbtns(3))
 	{
-		highscores[nofHighscores] = score;
+		highscores[nofHighscores] = tempScore;
+		nofHighscores++;
 		selectionSort(highscores, nofHighscores);
 		gamestate = 4;
 	}
-	if (getbtns(2))
-	{
-		gamestate = 0;
-	}
-	display_update();
+	
+
 }
 
+/* Written by A Kotronios
+Shows 4 best scores */
+void showHighscores(){
+	int i;
+	for (i = 0; i < 4; i++)
+	{
+		/* //char temp[4*2];
+		char *temp = itoaconv(highscores[i]);
+		strcat(temp, hsInitials[i]); */
+		display_string(i, itoaconv(highscores[i]));
+	}
+	
+}
+
+/* Written by A Kotronios
+calls on showHighscores */
+void leaderboard(){
+	showHighscores();
+	/* if (getbtns(3) && currentPage > 0)
+	{
+		currentPage--;
+	}
+	if (getbtns(1))
+	{
+		currentPage++;
+	} */
+}
+
+/* Not entirerly written by us, from lab3
+ */
 int main(void) {
         /*
 	  This will set the peripheral bus clock to the same frequency
@@ -722,15 +766,16 @@ int main(void) {
 		case 0:
 			/* Main menu */
 			display_string(0, "SPACE INVADERS!");
+			display_string(1, " ");
 			display_string(2, "1: NEW GAME");
 			display_string(3, "2: LEADERBOARDS");
 			
 			display_update();
-			labwork();
+			//labwork();
 			break;
 		case 1:
 			/* Gameplay */
-	  		labwork(); /* Do lab-specific things again and again */
+	  		//labwork(); /* Do lab-specific things again and again */
 			break;
 		case 2:
 			/* Game over */
